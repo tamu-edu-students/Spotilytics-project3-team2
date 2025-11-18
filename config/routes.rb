@@ -32,4 +32,6 @@ Rails.application.routes.draw do
 
   # Get Recommendations
   get  "recommendations",        to: "recommendations#recommendations",   as: :recommendations
+
+  get "/search", to: "search#index", as: :search
 end

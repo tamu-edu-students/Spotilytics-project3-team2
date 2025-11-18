@@ -4,19 +4,22 @@
 
 <main class="container mt-4">
   <h1 class="text-center">Welcome to Spotilytics</h1>
+
   <div class="hero-carousel mt-4 text-center">
     <div class="slides">
-      <%= image_tag "spotify.png", alt: "Spotify Logo Placeholder", class: "carousel-image" %>
-      <%= image_tag "spotify.png", alt: "Spotify Logo Placeholder", class: "carousel-image" %>
-      <%= image_tag "spotify.png", alt: "Spotify Logo Placeholder", class: "carousel-image" %>
+      <%= image_tag "spotify.png", alt: "Spotify", class: "carousel-image" %>
+      <%= image_tag "spotify.png", alt: "Spotify", class: "carousel-image" %>
+      <%= image_tag "spotify.png", alt: "Spotify", class: "carousel-image" %>
     </div>
   </div>
 
   <section class="home-description text-center mt-5">
     <h1>Discover Your Sound</h1>
     <p>
-      Access your stats anytime, anywhere, at your fingertips. Spotilytics is an all-in-one web application for spotify users to view and access their spotify account statistics whenever and wherever they want. Curious about your top tracks this year or your most listened to artist? Look no further, we have you covered.
+      Access your stats anytime, anywhere. View your Spotify listening history, 
+      top tracks, top artists, and more — all in one beautiful dashboard.
     </p>
+
     <% if current_user %>
       <%= link_to 'My Dashboard', "/dashboard", class: 'home-page-button' %>
     <% else %>
@@ -24,49 +27,143 @@
     <% end %>
   </section>
 
+  <!-- 🔍 GLOBAL SEARCH SECTION -->
+  <section class="spotify-search mt-5 text-center">
+    <h2>Search Spotify</h2>
+
+    <%= form_with url: home_path, method: :get, local: true do |form| %>
+      <%= form.text_field :query,
+          placeholder: "Search artists, tracks, albums...",
+          value: params[:query],
+          style: "width: 320px; padding: 8px; border-radius: 8px;" %>
+
+      <%= form.submit "Search",
+          style: "padding: 8px 14px; border-radius: 8px; margin-left: 10px;" %>
+    <% end %>
+
+    <% if params[:query].present? %>
+
+      <div class="search-results mt-4 text-left" style="max-width: 700px; margin: auto; color: white;">
+
+        <!-- 🎤 ARTIST PROFILE (ONE RESULT ONLY) -->
+        <h3>Artist</h3>
+
+        <% if @artists.present? %>
+          <% artist = @artists.first %>
+
+          <div class="text-center p-4 mb-4" style="background:#111; border-radius: 12px;">
+            <img src="<%= artist.image_url %>"
+                 alt="<%= artist.name %>"
+                 style="width:140px; height:140px; border-radius:50%; margin-bottom:10px;">
+
+            <h3 style="margin:0;"><%= artist.name %></h3>
+            <p style="color:#ccc;"><%= number_with_delimiter(artist.followers) %> followers</p>
+
+            <a href="<%= artist.spotify_url %>"
+               target="_blank"
+               style="background:#1db954; padding:10px 20px; border-radius:8px; color:white; text-decoration:none;">
+              View Artist on Spotify
+            </a>
+          </div>
+        <% else %>
+          <p>No artists found.</p>
+        <% end %>
+
+        <!-- 🎵 TRACKS -->
+        <h3 class="mt-4">Tracks</h3>
+
+        <% if @tracks.present? %>
+          <% @tracks.each_with_index do |track, i| %>
+
+            <div class="d-flex align-items-center p-3 mb-3"
+                 style="background: #111; border-radius: 10px;">
+
+              <!-- Rank -->
+              <div style="background: #333; padding: 6px 12px; border-radius: 8px; font-weight: bold;">
+                #<%= i + 1 %>
+              </div>
+
+              <!-- Album Cover -->
+              <img src="<%= track.album_image_url %>"
+                   alt="cover"
+                   style="width: 70px; height: 70px; border-radius: 5px; margin: 0 15px;">
+
+              <!-- Track Info -->
+              <div class="flex-grow-1">
+                <h5 style="margin: 0; color: white;"><%= track.name %></h5>
+                <p style="margin: 0; color: #bbb;"><%= track.artists %></p>
+                <p style="margin: 0; color: #888;">Album: <%= track.album_name %></p>
+                <p style="margin: 0; color: #888;">Popularity: <%= track.popularity %>/100</p>
+              </div>
+
+              <!-- Play Button -->
+              <a href="<%= track.spotify_url %>" target="_blank"
+                 style="background: #1db954; padding: 8px 14px; border-radius: 8px; color: white; text-decoration: none;">
+                ▶ Play
+              </a>
+            </div>
+
+          <% end %>
+        <% else %>
+          <p>No tracks found.</p>
+        <% end %>
+
+        <!-- 💿 ALBUMS -->
+        <h3 class="mt-4">Albums</h3>
+
+        <% if @albums.present? %>
+          <% @albums.each do |album| %>
+            <div style="padding: 5px 0;">
+              <strong><%= album.name %></strong>
+              <span style="color:#ccc;">by <%= album.artists %></span>
+            </div>
+          <% end %>
+        <% else %>
+          <p>No albums found.</p>
+        <% end %>
+
+      </div>
+    <% end %>
+  </section>
+  <!-- END SEARCH SECTION -->
+
+  <!-- Contributors -->
   <section class="contributors-section mt-5">
     <h2 class="text-center mb-4">Our Contributors</h2>
-    
+
     <div class="row justify-content-center">
-      <%# Contributor 1 %>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="contributor-card text-center p-3">
-          <%# image_tag "contributors/user2.jpg", alt: "User 2", class: "contributor-img mb-2" %>
-          <h5 class="contributor-name mb-1">Aurora Jitrskul</h5>
-          <p class="contributor-role mb-0">Developer</p>
+          <h5>Aurora Jitrskul</h5>
+          <p>Developer</p>
         </div>
       </div>
 
-      <%# Contributor 2 %>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="contributor-card text-center p-3">
-          <%# image_tag "contributors/user2.jpg", alt: "User 2", class: "contributor-img mb-2" %>
-          <h5 class="contributor-name mb-1">Pablo Pineda</h5>
-          <p class="contributor-role mb-0">Developer</p>
+          <h5>Pablo Pineda</h5>
+          <p>Developer</p>
         </div>
       </div>
 
-      <%# Contributor 3 %>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="contributor-card text-center p-3">
-          <%# image_tag "contributors/user3.jpg", alt: "User 3", class: "contributor-img mb-2" %>
-          <h5 class="contributor-name mb-1">Aditya Vellampalli</h5>
-          <p class="contributor-role mb-0">Developer</p>
+          <h5>Aditya Vellampalli</h5>
+          <p>Developer</p>
         </div>
       </div>
 
-      <%# Contributor 4 %>
       <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="contributor-card text-center p-3">
-          <%# image_tag "contributors/user4.jpg", alt: "User 4", class: "contributor-img mb-2" %>
-          <h5 class="contributor-name mb-1">Spoorthy Raghavendra</h5>
-          <p class="contributor-role mb-0">Developer</p>
+          <h5>Spoorthy Raghavendra</h5>
+          <p>Developer</p>
         </div>
       </div>
     </div>
   </section>
 
 </main>
+
 <footer class="spotify-footer py-4 mt-5 text-center">
   <p class="mb-0">&copy; Spotilytics 2025</p>
 </footer>

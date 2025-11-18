@@ -203,6 +203,86 @@ class SpotifyClient
     raise Error, "Could not determine Spotify user id" if uid.blank?
     uid
   end
+  def search(query, limit: 10)
+    access_token = ensure_access_token!
+
+    params = {
+      q: query,
+      type: "artist,track,album",
+      limit: limit
+    }
+
+    response = get("/search", access_token, params)
+
+    {
+      artists: build_artist_results(response.dig("artists", "items") || [], query),
+      tracks:  build_track_results(response.dig("tracks",  "items") || []),
+      albums:  build_album_results(response.dig("albums",  "items") || [])
+    }
+  end
+
+
+def build_artist_results(items, query = nil)
+  return [] if items.empty?
+
+  normalized = query.to_s.downcase.strip
+
+  # 1) Keep only artists with strong match
+  filtered = items.select do |a|
+    name = a["name"].to_s.downcase
+
+    name == normalized ||         # exact match
+    name.start_with?(normalized) || 
+    normalized.start_with?(name)
+  end
+
+  # 2) Convert to OpenStruct
+  filtered.map do |item|
+    OpenStruct.new(
+      id: item["id"],
+      name: item["name"],
+      image_url: item.dig("images", 0, "url"),
+      followers: item.dig("followers", "total"),
+      genres: item["genres"] || [],
+      spotify_url: item.dig("external_urls", "spotify")
+    )
+  end
+end
+
+
+def build_track_results(items)
+  items.map do |item|
+    OpenStruct.new(
+      id: item["id"],
+      name: item["name"],
+      artists: (item["artists"] || []).map { |a| a["name"] }.join(", "),
+      album_name: item.dig("album", "name"),
+      album_image_url: item.dig("album", "images", 0, "url"),
+      popularity: item["popularity"],
+      preview_url: item["preview_url"],
+      spotify_url: item.dig("external_urls", "spotify"),
+      duration_ms: item["duration_ms"]
+    )
+  end
+end
+
+def build_album_results(items)
+  items.map do |item|
+    OpenStruct.new(
+      id: item["id"],
+      name: item["name"],
+      artists: (item["artists"] || []).map { |a| a["name"] }.join(", "),
+      image_url: item.dig("images", 0, "url"),
+      release_date: item["release_date"],
+      total_tracks: item["total_tracks"],
+      spotify_url: item.dig("external_urls", "spotify")
+    )
+  end
+end
+
+
+
+  
 
   # Create a new playlist in the given user's Spotify account.
   # Returns the new playlist's Spotify ID (string).

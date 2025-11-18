@@ -1,0 +1,23 @@
+<h1>Spotify Search</h1>
+
+<%= form_with url: search_path, method: :get, local: true do |form| %>
+  <%= form.text_field :query, placeholder: "Search for artists, tracks, albums...", value: params[:query] %>
+  <%= form.submit "Search" %>
+<% end %>
+
+<% if params[:query].present? %>
+  <h2>Artists</h2>
+  <% @artists.each do |artist| %>
+    <p><strong><%= artist.name %></strong></p>
+  <% end %>
+
+  <h2>Tracks</h2>
+  <% @tracks.each do |track| %>
+    <p><%= track.name %> — <%= track.artists.first&.name %></p>
+  <% end %>
+
+  <h2>Albums</h2>
+  <% @albums.each do |album| %>
+    <p><%= album.name %> by <%= album.artists.first&.name %></p>
+  <% end %>
+<% end %>

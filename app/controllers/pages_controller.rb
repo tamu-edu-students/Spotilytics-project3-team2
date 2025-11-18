@@ -18,7 +18,24 @@ class PagesController < ApplicationController
   end
 
   def home
+    return unless params[:query].present?
+
+    results = spotify_client.search(params[:query])
+
+    @artists = results[:artists]
+    @tracks  = results[:tracks]
+    @albums  = results[:albums]
+
+  rescue => e
+    Rails.logger.error("Search error: #{e.message}")
+    @artists = []
+    @tracks  = []
+    @albums  = []
   end
+
+
+
+
 
   def dashboard
     # Top Artists
