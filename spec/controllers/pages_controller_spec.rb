@@ -6,6 +6,7 @@ RSpec.describe PagesController, type: :controller do
   shared_context "logged in user" do
     let(:session_user) do
       {
+        "id"           => "user_123",
         "display_name" => "Test Listener",
         "email"        => "listener@example.com",
         "image"        => "http://example.com/user.jpg"
@@ -357,6 +358,7 @@ RSpec.describe PagesController, type: :controller do
   before do
     routes.draw do
       get "top_tracks" => "pages#top_tracks"
+      get "track_journey" => "pages#track_journey"
       get "home"       => "pages#home"
     end
   end
@@ -515,6 +517,45 @@ RSpec.describe PagesController, type: :controller do
 
         expect(response).to redirect_to(home_path)
         expect(flash[:alert]).to eq("You must log in with spotify to refresh your data.")
+      end
+    end
+  end
+
+  describe "GET #track_journey" do
+    routes { ActionDispatch::Routing::RouteSet.new }
+
+    before do
+      routes.draw do
+        get "track_journey" => "pages#track_journey"
+        get "home" => "pages#home"
+      end
+      allow(controller).to receive(:default_render).and_return(nil)
+    end
+
+    context "when user is not logged in" do
+      it "redirects to home with an alert" do
+        get :track_journey
+        expect(response).to redirect_to(home_path)
+        expect(flash[:alert]).to eq("You must log in with Spotify to see your Track Journey.")
+      end
+    end
+
+    context "when user IS logged in" do
+      include_context "logged in user"
+
+      it "loads grouped_by_badge and time_ranges" do
+        mock = instance_double(TrackJourney)
+
+        expect(TrackJourney).to receive(:new)
+          .with(spotify_user_id: session_user["id"])
+          .and_return(mock)
+
+        allow(mock).to receive(:time_ranges).and_return([])
+        allow(mock).to receive(:grouped_by_badge).and_return({})
+
+        get :track_journey
+
+        expect(assigns(:tracks_by_badge)).to eq({})
       end
     end
   end

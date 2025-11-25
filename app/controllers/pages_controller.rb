@@ -21,35 +21,62 @@ class PagesController < ApplicationController
   end
 
   def dashboard
-    # Top Artists
     @top_artists = fetch_top_artists(limit: 10)
     @primary_artist = @top_artists.first
 
-    # Top Tracks
     @top_tracks = fetch_top_tracks(limit: 10)
     @primary_track = @top_tracks.first
 
-    # Genre Chart
+    spotify_user = session[:spotify_user]
+    if spotify_user && spotify_user["id"].present?
+      journey          = TrackJourney.new(spotify_user_id: spotify_user["id"])
+      @tracks_by_badge = journey.grouped_by_badge || {}
+    else
+      @tracks_by_badge = {}
+    end
+
     build_genre_chart!(@top_artists)
 
-    # Followed Artists
     @followed_artists = fetch_followed_artists(limit: 20)
 
-    # New Releases
     @new_releases = fetch_new_releases(limit: 2)
 
-
   rescue SpotifyClient::UnauthorizedError
-    redirect_to home_path, alert: "You must log in with spotify to access the dashboard." and return
+    redirect_to home_path,
+                alert: "You must log in with spotify to access the dashboard." and return
   rescue SpotifyClient::Error => e
     flash.now[:alert] = "We were unable to load your Spotify data right now. Please try again later."
-    @top_artists = []
-    @primary_artist = nil
-    @top_tracks = []
-    @primary_track = nil
-    @genre_chart = nil
+    @top_artists      = []
+    @primary_artist   = nil
+    @top_tracks       = []
+    @primary_track    = nil
+    @genre_chart      = nil
     @followed_artists = []
-    @new_releases = []
+    @new_releases     = []
+    @tracks_by_badge  = {}
+  end
+
+  def track_journey
+    spotify_user = session[:spotify_user]
+    unless spotify_user && spotify_user["id"].present?
+      redirect_to home_path, alert: "You must log in with Spotify to see your Track Journey."
+      return
+    end
+
+    spotify_user_id = spotify_user["id"]
+    journey         = TrackJourney.new(spotify_user_id: spotify_user_id)
+
+    @time_ranges     = journey.time_ranges
+    @tracks_by_badge = journey.grouped_by_badge(max_per_badge: 3) || {}
+
+    @available_badges = @tracks_by_badge.keys.map(&:to_s)
+
+    requested = params[:selected_badge].to_s.presence
+    if requested && @available_badges.include?(requested)
+      @selected_badge = requested.to_sym
+    else
+      @selected_badge = @tracks_by_badge.keys.first
+    end
   end
 
   def view_profile

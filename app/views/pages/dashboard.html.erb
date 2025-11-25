@@ -209,6 +209,107 @@
     </div>
   </div>
 
+  <div class="d-flex flex-col align-items-center justify-content-between" style="min-width: 1300px; width: 100%;">
+    <div class="spotify-card p-3 mb-4 track-journey-container ">
+  <h5 class="text-light mb-1">Track Journey</h5>
+  <p class="text-secondary small mb-3">
+    See how your top tracks evolved over the last 4 weeks, 6 months and 1 year
+  </p>
+
+  <% badge_labels = {
+       evergreen:        "Evergreen",
+       new_obsession:    "New Obsession",
+       short_term: "Short-Term Crush",
+       fading_out:       "Fading Out"
+     } %>
+
+  <% if @tracks_by_badge.present? %>
+    <div class="track-journey__grid">
+      <% badge_labels.each do |badge_key, label| %>
+        <% tracks = @tracks_by_badge[badge_key] || [] %>
+
+        <section class="track-journey__section" id="<%= badge_key %>">
+          <div class="track-journey__section-header">
+            <h4><%= label %></h4>
+            <p class="track-journey__section-subtitle">
+              <% case badge_key %>
+              <% when :evergreen %>
+                Stuck with you across all time ranges
+              <% when :new_obsession %>
+                New in your top 10 this month
+              <% when :short_term %>
+                Shot up recently but not in your long-term top 10 yet
+              <% when :fading_out %>
+                Falling in the rankings over time
+              <% end %>
+            </p>
+          </div>
+
+          <div class="track-journey__cards">
+            <% if tracks.present? %>
+          <% tracks.first(3).each do |track| %>
+              <article class="track-card track-card--dashboard">
+  <!-- Row 1: image + title/artist -->
+  <div class="track-card__top">
+    <div class="track-card__image-wrapper">
+      <% if track.album_image_url.present? %>
+        <img src="<%= track.album_image_url %>"
+             alt="<%= track.name %> cover"
+             class="track-card__image" />
+      <% else %>
+        <div class="track-card__image track-card__image--placeholder">
+          <span>No artwork</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="track-card__body">
+      <header class="track-card__header">
+        <h3 class="track-card__title"><%= track.name %></h3>
+        <p class="text-secondary small"><%= track.artists %></p>
+      </header>
+    </div>
+  </div>
+
+  <!-- Row 2: ranks (full width) -->
+  <dl class="track-card__ranks">
+    <div>
+      <dt>Last 4 weeks</dt>
+      <% short = track.ranks[:short_term] %>
+      <dd><%= short.present? ? "##{short}" : "–" %></dd>
+    </div>
+
+    <div>
+      <dt>Last 6 months</dt>
+      <% medium = track.ranks[:medium_term] %>
+      <dd><%= medium.present? ? "##{medium}" : "–" %></dd>
+    </div>
+
+    <div>
+      <dt>Last year</dt>
+      <% long = track.ranks[:long_term] %>
+      <dd><%= long.present? ? "##{long}" : "–" %></dd>
+    </div>
+  </dl>
+</article>
+            <% end %>
+            <% else %>
+          <p class="text-secondary small mb-0">
+            No tracks in this category yet.
+          </p>
+        <% end %>
+          </div>
+        </section>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-secondary mb-0">
+      We couldn’t load your track journey right now. Please try again soon.
+    </p>
+  <% end %>
+</div>
+  </div>
+
 <%# Load Chart.js and render ONLY if data present %>
 <% if @genre_chart.present? %>
   <!-- The exact same palette used by <noscript> -->
