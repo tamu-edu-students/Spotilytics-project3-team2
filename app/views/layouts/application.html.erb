@@ -52,6 +52,8 @@
                         class: "nav-link #{'active' if current_page?(listening_monthly_path)}" %>
             <%= link_to "Listening Heatmap", listening_heatmap_path, class: "nav-link #{'active' if current_page?(listening_heatmap_path)}" %>
             <%= link_to "Personality", personality_path, class: "nav-link #{'active' if current_page?(personality_path)}" %>
+            <%= link_to "Compare Playlists", compare_form_playlists_path,
+                        class: "nav-link #{'active' if current_page?(compare_form_playlists_path)}" %>
             <%= link_to "Discover", recommendations_path,
                         class: "nav-link #{'active' if current_page?(recommendations_path)}" %>
           <% end %>

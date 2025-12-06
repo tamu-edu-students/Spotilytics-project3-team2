@@ -1,0 +1,63 @@
+<main class="container listening-patterns mt-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <p class="eyebrow text-uppercase mb-1">Playlist Compatibility</p>
+      <h1 class="text-light mb-1">Do these playlists vibe?</h1>
+      <p class="text-secondary mb-0">We compare overlap and audio features to score compatibility.</p>
+    </div>
+    <div>
+      <%= link_to "Compare another", compare_form_playlists_path, class: "btn btn-outline-light btn-sm" %>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-4">
+      <div class="spotify-card p-3 h-100">
+        <p class="text-secondary mb-1">Compatibility</p>
+        <% if @compatibility_score.present? %>
+          <% badge_class = @compatibility_score >= 70 ? 'text-success' : @compatibility_score >= 40 ? 'text-warning' : 'text-danger' %>
+          <h2 class="text-light mb-2"><span class="<%= badge_class %>"><%= @compatibility_score %>%</span></h2>
+          <p class="text-secondary small mb-1">Based on playlist audio features.</p>
+          <p class="text-secondary small mb-0">We average energy, danceability, valence, acousticness, and instrumentalness for each playlist, then compute cosine similarity (0–100). Requires at least 5 tracks per playlist with audio data.</p>
+        <% else %>
+          <h5 class="text-light mb-1">Not enough audio data</h5>
+          <p class="text-secondary small mb-0">We need at least 5 tracks per playlist with audio features.</p>
+        <% end %>
+      </div>
+      <% if @explanations.present? %>
+        <div class="spotify-card p-3 mt-3">
+          <p class="text-secondary mb-1">Why these playlists vibe</p>
+          <ul class="text-secondary mb-0">
+            <% @explanations.each do |line| %>
+              <li><%= line %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-12 col-lg-8">
+      <div class="spotify-card p-3 h-100">
+        <p class="text-secondary mb-1">Overlap</p>
+        <p class="text-secondary small mb-1">
+          Playlist A: <code><%= @source_id %></code>
+          <% if @source_id.present? %>
+            · <a class="text-secondary" href="https://open.spotify.com/playlist/<%= @source_id %>" target="_blank" rel="noopener">Open</a>
+          <% end %>
+        </p>
+        <p class="text-secondary small mb-2">
+          Playlist B: <code><%= @target_id %></code>
+          <% if @target_id.present? %>
+            · <a class="text-secondary" href="https://open.spotify.com/playlist/<%= @target_id %>" target="_blank" rel="noopener">Open</a>
+          <% end %>
+        </p>
+        <h5 class="text-light mb-2">Common tracks: <%= @overlap_count %> (<%= @overlap_pct %>%)</h5>
+        <div class="row">
+          <div class="col-12">
+            <p class="text-secondary small mb-0">Overlap numbers shown above.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

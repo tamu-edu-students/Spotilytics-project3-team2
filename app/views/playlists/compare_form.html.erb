@@ -1,0 +1,20 @@
+<main class="container listening-patterns mt-4">
+  <div class="spotify-card p-4">
+    <h1 class="text-light mb-3">Compare Playlists</h1>
+    <p class="text-secondary mb-3">Enter two playlist URLs or IDs to see overlap and compatibility.</p>
+
+    <%= form_with url: compare_playlists_path, method: :get, local: true, class: "row g-3" do %>
+      <div class="col-12 col-md-6">
+        <label class="form-label text-secondary">My playlist (URL or ID)</label>
+        <input name="source_id" id="sourceInput" class="form-control bg-dark text-white border-secondary" placeholder="spotify: playlist URL or ID" value="<%= params[:source_id] %>">
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label text-secondary">Friend's playlist (URL or ID)</label>
+        <input name="target_id" id="targetInput" class="form-control bg-dark text-white border-secondary" placeholder="spotify: playlist URL or ID" value="<%= params[:target_id] %>">
+      </div>
+      <div class="col-12 d-flex justify-content-end">
+        <button type="submit" class="btn btn-spotify">Compare</button>
+      </div>
+    <% end %>
+  </div>
+</main>
