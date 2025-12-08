@@ -90,7 +90,7 @@ As a user, I want a calendar heatmap of my listening activity (using recently pl
 
 ---
 
-### **6. Playlist Split by Genre**
+### **7. Playlist Split by Genre**
 
 **Points:** 5
 **Issue:** https://github.com/tamu-edu-students/Spotilytics-project3-team2/issues/5
