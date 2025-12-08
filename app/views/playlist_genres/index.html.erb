@@ -1,0 +1,15 @@
+<h1>Select a Playlist</h1>
+
+<div class="results-grid">
+  <% @playlists.each do |p| %>
+    <%= link_to playlist_genres_path(p.id), class: "result-card-link" do %>
+      <div class="result-card">
+        <img src="<%= p.image_url %>" class="result-image">
+        <div class="result-info">
+          <p class="result-name"><%= p.name %></p>
+          <p class="result-subtext"><%= p.tracks_count %> tracks</p>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

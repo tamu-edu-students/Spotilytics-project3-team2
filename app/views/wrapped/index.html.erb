@@ -1,0 +1,112 @@
+<% content_for :extra_css do %>
+  <%= stylesheet_link_tag "wrapped", media: "all" %>
+<% end %>
+
+<main class="wrapped-container">
+  <div class="wrapped-header">
+    <h1>Your Spotilytics Wrapped</h1>
+    <p class="sub">A short story of your listening</p>
+  </div>
+
+  <div id="wrapped-player" class="wrapped-player" data-autoplay="true" data-interval="5000">
+    <% @slides.each_with_index do |slide, i| %>
+      <section class="story-slide" data-index="<%= i %>" style="<%= i == 0 ? '' : 'display:none;' %>">
+        <div class="slide-image" style="background-image: url('<%= slide[:image].presence || asset_path('spotify.png') %>')"></div>
+
+        <div class="slide-content">
+          <h2 class="slide-title"><%= slide[:title] %></h2>
+          <% if slide[:subtitle].present? %>
+            <p class="slide-sub"><%= slide[:subtitle] %></p>
+          <% end %>
+
+          <% if slide[:type] == :track && slide[:extras] %>
+            <div class="slide-meta">
+              <span>Popularity: <%= slide[:extras][:popularity] || "-" %></span>
+              <% if slide[:extras][:spotify_url].present? %>
+                <a class="btn-spotify" href="<%= slide[:extras][:spotify_url] %>" target="_blank" rel="noopener">Open in Spotify</a>
+              <% end %>
+              <% if slide[:extras][:preview_url].present? %>
+                <audio class="slide-audio" preload="none" controls src="<%= slide[:extras][:preview_url] %>"></audio>
+              <% end %>
+            </div>
+          <% elsif slide[:type] == :genres %>
+            <p class="slide-body"><%= slide[:body] %></p>
+          <% elsif slide[:type] == :artist %>
+            <p class="slide-body"><%= slide[:body] %></p>
+          <% elsif slide[:type] == :empty %>
+            <p class="slide-body">No data to display. Try refreshing your data.</p>
+          <% end %>
+
+        </div>
+      </section>
+    <% end %>
+  </div>
+
+  <div class="wrapped-controls">
+    <button id="wrapped-prev" class="wrapped-btn">Prev</button>
+    <div id="wrapped-dots" class="wrapped-dots">
+      <% @slides.each_index do |idx| %>
+        <button class="dot <%= idx == 0 ? 'active' : '' %>" data-index="<%= idx %>"></button>
+      <% end %>
+    </div>
+    <button id="wrapped-next" class="wrapped-btn">Next</button>
+  </div>
+</main>
+
+<script>
+  (function(){
+    const player = document.getElementById('wrapped-player');
+    if (!player) return;
+
+    const slides = Array.from(player.querySelectorAll('.story-slide'));
+    const dots = Array.from(document.querySelectorAll('#wrapped-dots .dot'));
+    const prevBtn = document.getElementById('wrapped-prev');
+    const nextBtn = document.getElementById('wrapped-next');
+
+    let current = 0;
+    const interval = parseInt(player.dataset.interval || 5000, 10);
+    let timer = null;
+
+    function show(index) {
+      slides.forEach((s,i) => s.style.display = (i === index) ? '' : 'none');
+      dots.forEach((d,i) => d.classList.toggle('active', i === index));
+      // pause any audio in other slides
+      slides.forEach((s,i) => {
+        if (i !== index) {
+          const audio = s.querySelector('audio');
+          if (audio && !audio.paused) audio.pause();
+        }
+      });
+      current = index;
+    }
+
+    function next() { show((current + 1) % slides.length); }
+    function prev() { show((current - 1 + slides.length) % slides.length); }
+
+    nextBtn.addEventListener('click', () => { stopAuto(); next(); });
+    prevBtn.addEventListener('click', () => { stopAuto(); prev(); });
+
+    dots.forEach(d => d.addEventListener('click', (e) => { stopAuto(); show(parseInt(d.dataset.index)); }));
+
+    function startAuto() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => { next(); }, interval);
+    }
+    function stopAuto() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    // Start autoplay if data-autoplay true
+    if (player.dataset.autoplay === "true") startAuto();
+
+    // handle keyboard left/right
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { stopAuto(); next(); }
+      if (e.key === 'ArrowLeft')  { stopAuto(); prev(); }
+    });
+
+    // initial show first slide
+    show(0);
+  })();
+</script>

@@ -45,4 +45,13 @@ Rails.application.routes.draw do
 
   # Get Recommendations
   get  "recommendations",        to: "recommendations#recommendations",   as: :recommendations
+
+  get "/search", to: "search#index", as: :search
+  get "/playlist_genres", to: "playlist_genres#index", as: :playlist_genres_index
+
+  get "/playlists/:id/genres", to: "playlist_genres#show", as: :playlist_genres
+  post "/playlists/:id/split_by_genre", to: "playlist_genres#split", as: :split_playlist_by_genre
+
+  get "/stories/:playlist_id", to: "stories#show", as: :stories
+  get "/wrapped", to: "wrapped#index", as: :wrapped
 end
