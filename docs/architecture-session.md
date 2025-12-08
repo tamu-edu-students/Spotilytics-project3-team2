@@ -8,9 +8,12 @@ flowchart LR
 
   subgraph Rails["Rails Server"]
     Session["session[:spotify_user]<br/>{ id, display_name, token, refresh_token, expires_at }"]
-    Pages["Controllers<br/>(Pages / TopTracks / Playlists)"]
+    Pages["Controllers<br/>(Pages / TopTracks / Playlists / ListeningPatterns / Personality)"]
     Client["SpotifyClient"]
+    History["ListeningHistory"]
+    Persona["MusicPersonality"]
     CacheAPI["Rails.cache (redis_cache_store)"]
+    DB["DB (listening_plays, batches)"]
   end
 
   subgraph Infra["Heroku Add-on"]
@@ -25,6 +28,8 @@ flowchart LR
   %% Session lifecycle
   Cookie <--> Session
   Pages --> Client
+  Pages --> History
+  Pages --> Persona
 
   %% OAuth login
   Pages -->|Start OAuth| OAuth
@@ -38,6 +43,8 @@ flowchart LR
   %% Cache check before API
   Client -->|Lookup cache key| CacheAPI
   CacheAPI <--> Redis
+  History --> DB
+  Pages -->|ActiveRecord| DB
 
   %% Cache hit / miss flow
   CacheAPI -- "Cache hit → Return cached data" --> Client
