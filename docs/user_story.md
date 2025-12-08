@@ -234,3 +234,23 @@ And I should see “Why these playlists vibe”
 
 **User Story:**  
 As a user I would like the ability to see past listening history aside from the most recent 50 that Spotify can provide to me.
+
+---
+
+### **15. Ability to Choose Number of Songs in Listening Hours**
+
+**Points:** 2  
+**Issue:** https://github.com/tamu-edu-students/Spotilytics-project3-team2/issues/32
+
+**User Story:**  
+As a user I would like the ability to choose the number of songs in my history for listening patterns.
+
+---
+
+### **16. Recent Plays on Listening History**
+
+**Points:** 2  
+**Issue:** https://github.com/tamu-edu-students/Spotilytics-project3-team2/issues/33
+
+**User Story:**  
+As a user I would like the ability to see the most recent songs that I have listened to on my hourly listening history page.
