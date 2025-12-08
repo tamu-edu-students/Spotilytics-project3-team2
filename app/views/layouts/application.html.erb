@@ -56,6 +56,25 @@
                         class: "nav-link #{'active' if current_page?(compare_form_playlists_path)}" %>
             <%= link_to "Discover", recommendations_path,
                         class: "nav-link #{'active' if current_page?(recommendations_path)}" %>
+            <%= link_to "Wrapped", wrapped_path,
+            class: "nav-link #{'active' if current_page?(wrapped_path)}" %>
+
+            <div class="nav-search-wrapper">
+              <%= form_with url: search_path, method: :get, local: true, class: "navbar-search-form" do %>
+                <input
+                  type="text"
+                  name="query"
+                  placeholder="Search for songs, artists, albums..."
+                  class="navbar-search-input"
+                  value="<%= h(params[:query] || params[:q]) %>"
+                  autocomplete="off"
+                >
+              <% end %>
+            </div>
+            <%= link_to "Genre Breakdown", playlist_genres_index_path,
+            class: "nav-link #{'active' if current_page?(playlist_genres_index_path)}" %>
+
+            
           <% end %>
         </div>
 

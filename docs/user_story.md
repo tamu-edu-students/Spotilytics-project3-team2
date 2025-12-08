@@ -93,6 +93,25 @@ As a user, I want a calendar heatmap of my listening activity (using recently pl
 
 ---
 
+### **7. Playlist Split by Genre**
+
+**Points:** 5
+**Issue:** https://github.com/tamu-edu-students/Spotilytics-project3-team2/issues/5
+
+**User Story:**
+As a Spotify user, I want to split a playlist into new playlists by genre so I can organize music based on moods or themes.
+
+**Acceptance Criteria:**
+
+* User clicks **“Split by Genre”** on the genre breakdown page.
+* System creates new playlists on Spotify:
+
+  * One playlist per genre containing matching tracks.
+* User sees confirmation + list of generated playlists.
+* If playlist has no genres, show an error.
+
+----
+
 ## Sprint 2
 
 ---

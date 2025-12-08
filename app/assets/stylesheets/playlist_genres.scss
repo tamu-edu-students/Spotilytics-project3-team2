@@ -1,0 +1,28 @@
+.btn-share {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #444;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  border: 1px solid #666;
+}
+
+.btn-share:hover {
+  background: #555;
+}
+
+.btn-spotify {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #1db954;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-spotify:hover {
+  background: #1ed760;
+}

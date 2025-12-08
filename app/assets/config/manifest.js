@@ -8,3 +8,5 @@
 //= link listening_patterns.css
 //= link personality.css
 //= link_tree ../../javascript .js
+//= link search.css
+//= link wrapped.css

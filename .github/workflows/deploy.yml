@@ -113,21 +113,3 @@ jobs:
         with:
           name: coverage-report
           path: coverage
-
-
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: [scan_ruby, scan_js, lint, test]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Heroku CLI 
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-      - uses: akhileshns/heroku-deploy@v3.14.15 
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "spotilytics-app"
-          heroku_email: "aurawra@outlook.com"
-          branch: main
-          usedocker: false

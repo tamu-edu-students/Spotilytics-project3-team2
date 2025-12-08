@@ -1,0 +1,88 @@
+<div class="search-results-container container mt-4">
+
+  <h1 class="text-center text-light">Search Results</h1>
+  <p class="text-center text-light">Showing results for: <strong><%= @query %></strong></p>
+
+  <!-- ========== TRACKS ========== -->
+  <% if @tracks.any? %>
+    <h2 class="text-light mt-4">Tracks</h2>
+
+    <div class="row">
+      <% @tracks.each do |t| %>
+        <% img  = t.dig("album", "images", 0, "url") %>
+        <% url  = t.dig("external_urls", "spotify") %>
+        <% arts = t["artists"].map { |a| a["name"] }.join(", ") %>
+
+        <div class="col-md-4 mb-3">
+          <a href="<%= url %>" target="_blank" class="text-decoration-none">
+            <div class="card bg-dark text-light h-100">
+              <img src="<%= img %>" class="card-img-top" alt="<%= t["name"] %>">
+
+              <div class="card-body">
+                <h5 class="card-title"><%= t["name"] %></h5>
+                <p class="card-text"><%= arts %></p>
+
+                <span class="btn btn-success btn-spotify">Open in Spotify</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- ========== ARTISTS ========== -->
+  <% if @artists.any? %>
+    <h2 class="text-light mt-4">Artists</h2>
+
+    <div class="row">
+      <% @artists.each do |a| %>
+        <% img  = a.dig("images", 0, "url") %>
+        <% url  = a.dig("external_urls", "spotify") %>
+
+        <div class="col-md-4 mb-3">
+          <a href="<%= url %>" target="_blank" class="text-decoration-none">
+            <div class="card bg-dark text-light h-100">
+              <img src="<%= img %>" class="card-img-top" alt="<%= a["name"] %>">
+
+              <div class="card-body">
+                <h5 class="card-title"><%= a["name"] %></h5>
+
+                <span class="btn btn-success btn-spotify">Open in Spotify</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- ========== ALBUMS ========== -->
+  <% if @albums.any? %>
+    <h2 class="text-light mt-4">Albums</h2>
+
+    <div class="row">
+      <% @albums.each do |al| %>
+        <% img  = al.dig("images", 0, "url") %>
+        <% url  = al.dig("external_urls", "spotify") %>
+        <% arts = al["artists"].map { |ar| ar["name"] }.join(", ") %>
+
+        <div class="col-md-4 mb-3">
+          <a href="<%= url %>" target="_blank" class="text-decoration-none">
+            <div class="card bg-dark text-light h-100">
+              <img src="<%= img %>" class="card-img-top" alt="<%= al["name"] %>">
+
+              <div class="card-body">
+                <h5 class="card-title"><%= al["name"] %></h5>
+                <p class="card-text"><%= arts %></p>
+
+                <span class="btn btn-success btn-spotify">Open in Spotify</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>

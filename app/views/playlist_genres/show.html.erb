@@ -1,0 +1,40 @@
+<h1>Genre Breakdown</h1>
+
+<!-- SHARE GENRE BREAKDOWN BUTTON -->
+<div style="margin-bottom: 20px;">
+  <a href="<%= @share_url %>" class="btn-share">
+    Share Genre Breakdown
+  </a>
+</div>
+
+<!-- SHARE SPOTIFY PLAYLIST BUTTON -->
+<% if @playlist_url.present? %>
+  <div style="margin-bottom: 20px;">
+    <a href="<%= @playlist_url %>" target="_blank" class="btn-spotify">
+      Share Playlist on Spotify
+    </a>
+  </div>
+<% end %>
+
+<!-- TOP GENRE -->
+<p><strong>Top Genre:</strong> <%= @top_genre || "Unknown" %></p>
+
+<table class="genre-table">
+  <thead>
+    <tr>
+      <th>Genre</th>
+      <th>Tracks</th>
+      <th>Percentage</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @genre_breakdown.each do |g| %>
+      <tr>
+        <td><%= g[:genre] %></td>
+        <td><%= g[:count] %></td>
+        <td><%= g[:percentage] %>%</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

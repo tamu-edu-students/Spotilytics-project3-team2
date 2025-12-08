@@ -72,9 +72,6 @@ group :development, :test do
   # Rspec
   gem "rspec-rails"
 
-  # Coverage
-  gem "simplecov", require: false
-
   # Database cleaner (used by cucumber for test isolation)
   gem "database_cleaner-active_record"
 
