@@ -1,0 +1,11 @@
+<h1>Playlist Stories</h1>
+
+<p>Playlist ID: <%= @playlist_id %></p>
+
+<% if @tracks.present? %>
+  <% @tracks.each do |track| %>
+    <p><%= track.name %></p>
+  <% end %>
+<% else %>
+  <p>No tracks found.</p>
+<% end %>
