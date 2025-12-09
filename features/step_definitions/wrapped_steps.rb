@@ -18,8 +18,8 @@ Given(/^Spotify API returns top track "([^"]*)" with image "([^"]*)" and genres 
     preview_url: "http://preview.url/#{name}",
     spotify_url: "http://spotify.url/#{name}"
   )
-  allow(mock_spotify_client).to receive(:top_tracks).and_return([track])
-  
+  allow(mock_spotify_client).to receive(:top_tracks).and_return([ track ])
+
   # Mock the genres access, even though top_tracks doesn't usually return genres directly.
   # The test assumes the track object has these properties for the story logic.
   @mock_track_genres = genres_list.split(',').map(&:strip)
@@ -31,9 +31,9 @@ Given(/^Spotify API returns top artist "([^"]*)" with image "([^"]*)"$/) do |nam
     name: name,
     image_url: img_url,
     # This is critical for the 'Favorite Genre' slide
-    genres: @mock_track_genres || ["mock-genre-1"]
+    genres: @mock_track_genres || [ "mock-genre-1" ]
   )
-  allow(mock_spotify_client).to receive(:top_artists).and_return([artist])
+  allow(mock_spotify_client).to receive(:top_artists).and_return([ artist ])
 end
 
 Given(/^Spotify API returns no top tracks$/) do
@@ -48,7 +48,7 @@ Given(/^Spotify API raises UnauthorizedError when fetching top tracks$/) do
   # Mock both top tracks and artists calls to fail gracefully (or redirect in the controller)
   allow(mock_spotify_client).to receive(:top_tracks).and_raise(SpotifyClient::UnauthorizedError.new("Token expired"))
   allow(mock_spotify_client).to receive(:top_artists).and_raise(SpotifyClient::UnauthorizedError.new("Token expired"))
-  
+
   # FIX for crashing controller (assuming no rescue block in production controller):
   # This setup forces the subsequent When step to fake the redirect.
   @force_unauthorized_error = true
@@ -58,7 +58,7 @@ end
 
 When(/^I visit the wrapped page$/) do
   current_route = "/wrapped" # Assuming the route is defined as /wrapped
-  
+
   if @force_unauthorized_error
     begin
       visit current_route

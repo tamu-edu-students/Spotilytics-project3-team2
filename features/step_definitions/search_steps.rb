@@ -40,7 +40,7 @@ Given(/^Spotify API responds to search with success and data$/) do |table|
   table.hashes.each do |row|
     type = row.keys.first.to_sym
     count = row.values.first.to_i
-    
+
     results[type] = Array.new(count) do |i|
       # FIX: Use the universal helper for all result types
       mock_spotify_result(type, i)
@@ -118,15 +118,15 @@ Given('I am logged in with Spotify') do
   # This step sets up the session to mimic a successful Spotify login.
   # We need to ensure the session contains the required user data for
   # the controller's `before_action :require_spotify_auth!` to pass.
-  
+
   # NOTE: If your application uses a Spotify token, include that here as well.
-  
+
   spotify_user_data = {
     "id" => "test-cucumber-user",
     "display_name" => "Cucumber Test User",
     "email" => "test@example.com"
   }
-  
+
   # For RSpec/Capybara integration, you often need to set session variables
   # directly in the controller context or rely on a custom test helper
   # (e.g., 'Devise::Test::IntegrationHelpers' style).
@@ -144,9 +144,9 @@ end
 
 Then('the response status should be {int}') do |expected_status|
   # Checks the HTTP response status code of the last request.
-  # Capybara uses page.status_code, but if redirects happen, 
+  # Capybara uses page.status_code, but if redirects happen,
   # we check the last response's status.
-  
+
   # Use response.status if testing directly with Rack::Test/ActionDispatch::IntegrationTest
   # within the Cucumber steps.
   if respond_to?(:response) && response
@@ -164,12 +164,12 @@ end
 
 Then('I should see the alert message {string}') do |expected_message|
   # Checks for the presence of the flash alert message.
-  # This assumes your Rails layout renders flash messages inside a container 
+  # This assumes your Rails layout renders flash messages inside a container
   # with a class like `.alert` or `.flash`.
-  
+
   # Check common locations for flash messages:
   expect(page).to have_content(expected_message)
-  
+
   # Optional: Check if it's styled as an alert/flash if your app has specific selectors
   # expect(page).to have_selector('.alert', text: expected_message)
 end

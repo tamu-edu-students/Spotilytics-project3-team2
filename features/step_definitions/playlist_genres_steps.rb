@@ -32,12 +32,12 @@ end
 Given(/^Spotify API returns tracks and genres for playlist "([^"]*)"$/) do |playlist_id, table|
   # Store the mocked playlist details for get_playlist mock
   @mock_playlist_id = playlist_id
-  
+
   tracks_with_genres = table.hashes.map do |row|
     # The controller expects a structure like { id: 't1', genres: ['rock', 'alt rock'] }
-    { 
-      id: row['track_id'], 
-      genres: row['genres'].split(',').map(&:strip) 
+    {
+      id: row['track_id'],
+      genres: row['genres'].split(',').map(&:strip)
     }
   end
 
@@ -45,7 +45,7 @@ Given(/^Spotify API returns tracks and genres for playlist "([^"]*)"$/) do |play
   allow(mock_spotify_client).to receive(:playlist_tracks_with_genres).with(playlist_id).and_return(tracks_with_genres)
 
   # Mock the basic playlist fetching (used to get the URL)
-  mock_playlist_response = { 
+  mock_playlist_response = {
     "id" => playlist_id,
     "external_urls" => { "spotify" => "https://open.spotify.com/playlist/#{playlist_id}" }
   }
@@ -53,9 +53,8 @@ Given(/^Spotify API returns tracks and genres for playlist "([^"]*)"$/) do |play
 end
 
 When(/^I visit the playlist genre analysis page for "([^"]*)"$/) do |playlist_id|
-
   current_route = "/playlists/#{playlist_id}/genres"
-  
+
   begin
     # This line attempts the visit, which will crash the controller
     visit current_route
@@ -78,7 +77,7 @@ Then(/^I should see the following genre breakdown:$/) do |expected_table|
     genre = expected_row['Genre']
     count = expected_row['Count']
     percentage = expected_row['Percentage']
-    
+
     # Assert that all expected data is visible in the breakdown section
     expect(page).to have_content(/#{genre}.*#{count}.*#{percentage}/i)
   end
